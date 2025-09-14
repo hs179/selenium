@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login with Math Captcha</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 50px; }
+    label { display: block; margin-top: 10px; }
+    input { padding: 5px; margin-top: 5px; width: 200px; }
+    #captcha-box { 
+      font-weight: bold; 
+      font-size: 18px; 
+      margin-top: 10px; 
+      padding: 5px; 
+      background: #f2f2f2; 
+      display: inline-block;
+    }
+    button { padding: 8px 15px; margin-top: 15px; }
+    button:disabled { background: gray; color: white; }
+  </style>
+</head>
+<body>
+  <h2>Login Form with Math Captcha</h2>
+  <form id="loginForm">
+    <label>Username:</label>
+    <input type="text" id="username"><br>
+
+    <label>Password:</label>
+    <input type="password" id="password"><br>
+
+    <label>Captcha:</label>
+    <div id="captcha-box"></div>
+    <button type="button" onclick="generateCaptcha()">Refresh</button><br>
+    <input type="text" id="captchaInput" placeholder="Enter result"><br>
+
+    <button id="submitBtn" type="submit" disabled>Login</button>
+  </form>
+
+  <script>
+    let captchaAnswer = 0;
+
+    function generateCaptcha() {
+      // random numbers between 1–20
+      const num1 = Math.floor(Math.random() * 20) + 1;
+      const num2 = Math.floor(Math.random() * 20) + 1;
+      // random operator (+ or -)
+      const operator = Math.random() > 0.5 ? "+" : "-";
+
+      // calculate answer
+      captchaAnswer = operator === "+" ? num1 + num2 : num1 - num2;
+
+      // show captcha question
+      document.getElementById("captcha-box").innerText = `${num1} ${operator} ${num2} = ?`;
+      validateForm(); // reset validation
+    }
+
+    function validateForm() {
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const captcha = document.getElementById("captchaInput").value.trim();
+
+      const isValid = user && pass && captcha === captchaAnswer.toString();
+      document.getElementById("submitBtn").disabled = !isValid;
+    }
+
+    // Event listeners
+    document.getElementById("username").addEventListener("input", validateForm);
+    document.getElementById("password").addEventListener("input", validateForm);
+    document.getElementById("captchaInput").addEventListener("input", validateForm);
+
+    document.getElementById("loginForm").addEventListener("submit", e => {
+      e.preventDefault();
+      alert("Login Successful!");
+    });
+
+    // Generate captcha on page load
+    generateCaptcha();
+  </script>
+</body>
+</html>
